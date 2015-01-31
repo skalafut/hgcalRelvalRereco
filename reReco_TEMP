@@ -1,0 +1,12 @@
+universe = vanilla 
+Executable = /INCOMPLETEPATH/hgcalRelvalRereco/run_reReco_NUM.csh
+Requirements = OpSys == "LINUX"&& (Arch != "DUMMY" )
+Should_Transfer_Files = YES
+WhenToTransferOutput = ON_EXIT
+Transfer_Input_Files = newRecoCode_with_date.tar, step3_RAW2DIGI_L1Reco_RECO_NUM.py
+x509userproxy = $ENV(X509_USER_PROXY)
+Arguments = $(Process)
+Output = relval_rereco_$(Cluster)_$(Process).stdout
+Error = relval_rereco_$(Cluster)_$(Process).stderr
+Log = relval_rereco_$(Cluster)_$(Process).log
+Queue 1 

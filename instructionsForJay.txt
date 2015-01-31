@@ -1,0 +1,48 @@
+Instructions for submitting jobs to re-reco existing HGCal relval samples with new reconstruction code
+With the exception of making the output file directory in step 1, all of these instructions should
+be carried out in this directory, 'hgcalRelvalRereco', which was cloned from github.  
+
+1. setup a directory where you want the output files to be stored.  Open the file run_reReco_TEMP.csh and
+   change 'AbsPathToOutDir' to the absolute path name of the directory you created.
+
+2. open reReco_TEMP, the condor job submission file template, and change 'INCOMPLETEPATH' to the absolute
+   path name of the directory where you cloned the github directory 'hgcalRelvalRereco'.  
+
+3. checkout the CMSSW release in which the data sample was produced, and cd to the src/ directory, and cmsenv.
+   Checkout the new repository of reco code from github using
+       git cms-merge-topic userName:branchName
+
+4. execute 'scram b -j 8' to compile the new reconstruction code.
+
+5. bundle all of the compiled directories into a single .tar file.  The name
+   of the tar file should indicate the CMSSW release and the date on which the
+   reco code was checked out.  Something like forSLHC23_Jan_15.tar works well.
+   Move this .tar file up two directories.
+
+6. cd two directories up and open the file cmsswSetup.sh.  Change relName to
+   the appropriate CMSSW release.  Run the cmsswSetup.sh script.
+
+7. Open the step3_TEMP python file created by cmsswSetup.sh.  Insert the
+   xrootd file names which you want to reprocess.  See the python file named
+   old_step3...py for an example.  Put each file name on its own line, and
+   comment out each file name in this python file.
+
+8. Open the file makeRunFiles.sh.  Change tarName to the name of the .tar
+   directory created in step 5.  Change relName to match relName set in step 6.
+   Set the constant value added to i in the declaration of 'line' such that line
+   is equal to the line number of the first file name in the step3 python file
+   when i equals zero.  Adjust the max value of i such that all of the input
+   files are uncommented by the for loop. 
+
+9. Open the file submitRerecoJobs.sh, and increase the max value of i to match
+   the max value of i set in makeRunFiles.sh.  Adjust the disk space and memory
+   requests if running over zero PU input files. 
+
+10. execute makeRunFiles.sh.
+
+11. make a proxy of your grid certificate.
+
+12. execute submitRerecoJobs.sh.
+
+
+ 
